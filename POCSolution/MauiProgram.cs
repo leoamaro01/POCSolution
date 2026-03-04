@@ -1,9 +1,22 @@
-﻿using Microsoft.Extensions.Logging;
+﻿// <copyright file="MauiProgram.cs" company="POC NTSprint">
+// Copyright (c) POC NTSprint. All rights reserved.
+// </copyright>
 
 namespace POCSolution
 {
+    using Microsoft.Extensions.Logging;
+    using POCSolution.Services.Implementations;
+    using POCSolution.Services.Interfaces;
+
+    /// <summary>
+    /// Maui pogrram main class.
+    /// </summary>
     public static class MauiProgram
     {
+        /// <summary>
+        /// Start of the pipeline to create the Maui app.
+        /// </summary>
+        /// <returns><see cref="MauiApp"/>.</returns>
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
@@ -15,8 +28,9 @@ namespace POCSolution
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            builder.Services.AddSingleton<ICameraService, CameraService>();
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();
