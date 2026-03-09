@@ -2,6 +2,19 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="POCSolution.MainPage">
-
-    <WebView x:Name="MainWebView"/>
- </ContentPage>
+   <VerticalStackLayout>
+      <WebView x:Name="MainWebView"/>
+      <Label Text="You need to authenticate to continue."
+             FontSize="24"
+             HorizontalOptions="Center"
+             x:Name="AuthenticationPromptLabel"
+             Margin="0,20"/>
+      <Button Text="Authenticate"
+              x:Name="AuthenticateButton"
+              HorizontalOptions="Center"/>
+      <Label x:Name="AuthenticationResultLabel"
+             FontSize="18"
+             HorizontalOptions="Center"
+             Margin="0,20"/>
+   </VerticalStackLayout>
+</ContentPage>

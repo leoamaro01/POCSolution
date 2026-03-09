@@ -4,6 +4,7 @@
 
 namespace POCSolution
 {
+    using Plugin.Maui.Biometric;
     using POCSolution.Services.Interfaces;
     using POCSolution.Utils;
 
@@ -13,6 +14,9 @@ namespace POCSolution
     public partial class MainPage : ContentPage
     {
         private readonly ICameraService cameraService;
+        private readonly IBiometric biometricService;
+
+        private AuthenticationResponse? authenticationResponse;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainPage"/> class.
@@ -23,21 +27,40 @@ namespace POCSolution
         {
             this.InitializeComponent();
             this.cameraService = ServiceHelper.GetService<ICameraService>();
+            this.biometricService = ServiceHelper.GetService<IBiometric>();
+
+            this.MainWebView.IsVisible = false;
+            this.AuthenticationResultLabel.IsVisible = false;
+            this.AuthenticateButton.Clicked += this.OnAuthenticateClicked;
         }
 
-        /// <inheritdoc/>
-        protected override async void OnNavigatedTo(NavigatedToEventArgs args)
+        private async void OnAuthenticateClicked(object? sender, EventArgs e)
         {
-            base.OnNavigatedTo(args);
-
-            try
+            if (this.authenticationResponse == null || this.authenticationResponse.Status != BiometricResponseStatus.Success)
             {
+                this.authenticationResponse = await this.biometricService.AuthenticateAsync(
+                    new AuthenticationRequest()
+                    {
+                        Title = "Authentication Required",
+                        Subtitle = "Confirm your identity to access the webview",
+                        AuthStrength = AuthenticatorStrength.Strong,
+                        AllowPasswordAuth = false,
+                        NegativeText = "Cancel",
+                    },
+                    CancellationToken.None);
+            }
+
+            if (this.authenticationResponse.Status == BiometricResponseStatus.Success)
+            {
+                this.AuthenticationPromptLabel.IsVisible = false;
+                this.AuthenticateButton.IsVisible = false;
+                this.MainWebView.IsVisible = true;
                 this.LoadWebContent();
             }
-            catch (Exception ex)
+            else
             {
-                await this.DisplayAlertAsync("Error", $"Ocurrió un error: {ex.Message}", "OK");
-                await Shell.Current.GoToAsync("///login");
+                this.AuthenticationResultLabel.IsVisible = true;
+                this.AuthenticationResultLabel.Text = $"Authentication failed: {this.authenticationResponse.ErrorMsg}";
             }
         }
 
