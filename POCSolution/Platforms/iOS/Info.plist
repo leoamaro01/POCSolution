@@ -37,5 +37,8 @@
 
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Esta aplicación necesita permiso para guardar fotos en tu galería</string>
+
+	<key>NSFaceIDUsageDescription</key>
+	<string>Esta aplicación necesita acceso a FaceID para autenticación biométrica</string>
 </dict>
 </plist>
