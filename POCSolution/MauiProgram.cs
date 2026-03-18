@@ -5,6 +5,7 @@
 namespace POCSolution
 {
     using Microsoft.Extensions.Logging;
+    using Plugin.Maui.Biometric;
     using POCSolution.Services.Implementations;
     using POCSolution.Services.Interfaces;
 
@@ -29,6 +30,7 @@ namespace POCSolution
                 });
 
             builder.Services.AddSingleton<ICameraService, CameraService>();
+            builder.Services.AddSingleton(BiometricAuthenticationService.Default);
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
